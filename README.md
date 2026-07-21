@@ -4,11 +4,12 @@ Interactive top-down workbench trainer for the **L403A1** (Knight’s Armament K
 
 ## Features
 
-- Full-viewport bench view of a stylised L403A1
-- **Hover hotspots** with part names, descriptions, and key facts
-- **Drag-and-drop** field strip / reassembly with snap-to-fit ghosts
-- **Guided** mode (enforced strip order) and **Free** mode (dependency-valid moves)
+- Full-viewport bench view of a stylised L403A1 (suppressor, LPVO, URX-6, mag, BCG, charging handle, ambi lower, CTR stock)
+- **Hover hotspots** for handguard, barrel, gas block, stock, grip, ambi controls, and E3.2 bolt (when BCG is out)
+- **Drag-and-drop** field strip / reassembly with snap-to-fit ghosts and tray parking
+- **Guided** mode (enforced strip / rebuild order) and **Free** mode (dependency-valid moves only)
 - Auto-strip and reset controls
+- Desktop-primary; pointer events work for touch as well
 
 ## Why 2D SVG (not 3D)?
 

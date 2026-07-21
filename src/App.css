@@ -114,6 +114,14 @@
   height: 100%;
   display: block;
   user-select: none;
+  touch-action: none;
+}
+
+.bench-caption {
+  fill: rgba(196, 163, 90, 0.55);
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.18em;
 }
 
 .tray {
@@ -142,21 +150,22 @@
 }
 
 .hotspot {
-  fill: rgba(196, 163, 90, 0.02);
+  fill: rgba(196, 163, 90, 0.03);
   stroke: transparent;
-  stroke-width: 1;
-  transition: fill 0.2s ease, stroke 0.2s ease;
+  stroke-width: 1.5;
+  transition: fill 0.18s ease, stroke 0.18s ease, opacity 0.18s ease;
   cursor: help;
 }
 
 .hotspot:hover,
 .hotspot.hot {
-  fill: rgba(196, 163, 90, 0.2);
-  stroke: rgba(196, 163, 90, 0.55);
+  fill: rgba(196, 163, 90, 0.28);
+  stroke: rgba(196, 163, 90, 0.75);
+  stroke-dasharray: none;
 }
 
 .part {
-  transition: filter 0.2s ease;
+  transition: filter 0.2s ease, opacity 0.2s ease;
 }
 
 .part.draggable {
@@ -165,15 +174,34 @@
 
 .part.dragging {
   cursor: grabbing;
-  filter: brightness(1.12);
+  filter: brightness(1.14) !important;
+  opacity: 0.95;
 }
 
 .part.locked {
   cursor: default;
 }
 
+.part.guided-target {
+  animation: target-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes target-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.88;
+  }
+}
+
 .snap-ghost {
   animation: ghost-breathe 2.4s ease-in-out infinite;
+}
+
+.snap-ghost-target {
+  animation: ghost-target 1.4s ease-in-out infinite;
 }
 
 @keyframes ghost-breathe {
@@ -183,6 +211,16 @@
   }
   50% {
     opacity: 0.45;
+  }
+}
+
+@keyframes ghost-target {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
   }
 }
 
@@ -279,10 +317,39 @@
   .info-panel {
     border-left: none;
     border-top: 1px solid rgba(196, 163, 90, 0.18);
-    max-height: 38vh;
+    max-height: 36vh;
+    padding: 0.9rem 1rem 0.75rem;
+  }
+
+  .info-panel h2 {
+    font-size: 1.45rem;
   }
 
   .brand-sub {
     display: none;
+  }
+
+  .topbar {
+    padding: 0.65rem 0.85rem;
+  }
+
+  .mode-toggle button,
+  .ghost {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.8rem;
+  }
+
+  .tray-label {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .brand-mark {
+    font-size: 1.5rem;
+  }
+
+  .controls {
+    gap: 0.35rem;
   }
 }
