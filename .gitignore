@@ -1,0 +1,15 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+build-log.txt
+
+node_modules
+dist
+dist-ssr
+*.local
+*.tsbuildinfo
+
+.vscode/*
+!.vscode/extensions.json
+.DS_Store

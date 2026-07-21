@@ -1,0 +1,50 @@
+:root {
+  --bg-deep: #1a1c18;
+  --bg-mid: #242820;
+  --table-dark: #3d3428;
+  --table-light: #4a4032;
+  --table-grain: rgba(0, 0, 0, 0.18);
+  --steel: #8a9196;
+  --steel-dark: #4e555a;
+  --steel-light: #c4c9cc;
+  --accent: #c4a35a;
+  --accent-dim: #8a7340;
+  --ink: #e8e4d9;
+  --ink-muted: #a8a498;
+  --danger: #c45c4a;
+  --ok: #6a9a6e;
+  --panel: rgba(22, 24, 20, 0.92);
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
