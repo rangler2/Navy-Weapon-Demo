@@ -1,16 +1,17 @@
 import type { PartId } from '../data/parts'
 
+/** Flat Dark Earth palette matched to issued L403A1 / AIW photos */
 const c = {
-  dark: '#343a3f',
-  mid: '#565e65',
-  light: '#8a9299',
-  hi: '#c2c8cd',
-  black: '#171b1f',
-  rail: '#6d757c',
-  poly: '#2a2e32',
-  poly2: '#3a4046',
-  bronze: '#6a5a48',
-  opticGlass: '#0f1a16',
+  dark: '#6a5744',
+  mid: '#8a7358',
+  light: '#b59a78',
+  hi: '#d4c0a4',
+  black: '#2a221a',
+  rail: '#7a6650',
+  poly: '#5c4a38',
+  poly2: '#6e5844',
+  bronze: '#9a7a52',
+  opticGlass: '#1a1814',
 }
 
 interface PartVisualProps {

@@ -9,11 +9,13 @@ import {
   type HotspotId,
   type PartId,
 } from './data/parts'
+import { REF_PHOTOS } from './data/photos'
 import { AssembledOffsets, PartHitArea, PartVisual } from './components/PartVisuals'
 import './App.css'
 
 type Mode = 'guided' | 'free'
 type Phase = 'strip' | 'rebuild'
+type View = 'schematic' | 'photo'
 
 interface PartState {
   installed: boolean
@@ -99,12 +101,16 @@ export default function App() {
   const [parts, setParts] = useState(initialParts)
   const [mode, setMode] = useState<Mode>('guided')
   const [phase, setPhase] = useState<Phase>('strip')
+  const [view, setView] = useState<View>('schematic')
+  const [photoIndex, setPhotoIndex] = useState(0)
   const [hover, setHover] = useState<HotspotId | null>(null)
   const [dragging, setDragging] = useState<PartId | null>(null)
   const [message, setMessage] = useState(
     'Hover for info · drag parts to strip · snap ghosts to rebuild',
   )
   const [pulse, setPulse] = useState(false)
+
+  const activePhoto = REF_PHOTOS[photoIndex] ?? REF_PHOTOS[0]
 
   const svgRef = useRef<SVGSVGElement | null>(null)
   const dragOffset = useRef({ x: 0, y: 0 })
@@ -365,6 +371,26 @@ export default function App() {
           <span className="brand-sub">Field Strip Trainer · KS-1 / AIW</span>
         </div>
         <div className="controls">
+          <div className="mode-toggle" role="group" aria-label="Bench view">
+            <button
+              type="button"
+              className={view === 'schematic' ? 'active' : ''}
+              onClick={() => setView('schematic')}
+            >
+              Schematic
+            </button>
+            <button
+              type="button"
+              className={view === 'photo' ? 'active' : ''}
+              onClick={() => {
+                setView('photo')
+                setDragging(null)
+                dragIdRef.current = null
+              }}
+            >
+              Photo
+            </button>
+          </div>
           <div className="mode-toggle" role="group" aria-label="Interaction mode">
             <button
               type="button"
@@ -381,22 +407,68 @@ export default function App() {
               Free
             </button>
           </div>
-          <button type="button" className="ghost" onClick={autoStrip}>
+          <button type="button" className="ghost" onClick={autoStrip} disabled={view === 'photo'}>
             Auto strip
           </button>
-          <button type="button" className="ghost" onClick={reset}>
+          <button type="button" className="ghost" onClick={reset} disabled={view === 'photo'}>
             Reset
           </button>
         </div>
       </header>
 
       <div className="workspace">
+        {view === 'photo' ? (
+          <section className="photo-stage" aria-label="Photorealistic L403A1 reference">
+            <figure className="photo-hero">
+              <img
+                src={activePhoto.src}
+                alt={activePhoto.title}
+                className="photo-hero-img"
+              />
+              <figcaption className="photo-caption">
+                <div>
+                  <p className="photo-kicker">Reference photo · issued AIW</p>
+                  <h2>{activePhoto.title}</h2>
+                  <p>{activePhoto.caption}</p>
+                </div>
+                <p className="photo-credit">
+                  {activePhoto.credit}
+                  {' · '}
+                  <a href={activePhoto.licenceUrl} target="_blank" rel="noreferrer">
+                    {activePhoto.licence}
+                  </a>
+                </p>
+              </figcaption>
+            </figure>
+            <div className="photo-thumbs" role="list">
+              {REF_PHOTOS.map((p, i) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  role="listitem"
+                  className={`photo-thumb ${i === photoIndex ? 'active' : ''}`}
+                  onClick={() => setPhotoIndex(i)}
+                  aria-label={p.title}
+                >
+                  <img src={p.src} alt="" />
+                </button>
+              ))}
+            </div>
+            <p className="photo-note">
+              Interactive field-strip stays on the Schematic view — no rights-cleared,
+              part-separated KS-1 3D/photo kit was available. These are real issued-system
+              photographs under OGL / public domain.
+            </p>
+          </section>
+        ) : null}
+
         <svg
           ref={svgRef}
-          className="bench"
+          className={`bench ${view === 'photo' ? 'bench-hidden' : ''}`}
           viewBox="0 0 1280 720"
           role="img"
           aria-label="L403A1 workbench, top-down"
+          aria-hidden={view === 'photo'}
           onPointerMove={onBenchPointerMove}
         >
           <defs>
@@ -522,7 +594,24 @@ export default function App() {
         </svg>
 
         <aside className={`info-panel ${activeInfo ? 'has-info' : ''}`}>
-          {activeInfo ? (
+          {view === 'photo' ? (
+            <>
+              <p className="info-kicker">Photoreal reference</p>
+              <h2>{activePhoto.title}</h2>
+              <p className="info-body">{activePhoto.caption}</p>
+              <ul>
+                <li>Flat Dark Earth / coyote finish as issued</li>
+                <li>QDC/MCQ-PRT suppressor + 1–10× LPVO + offset red-dot</li>
+                <li>Switch to Schematic to field-strip the layered trainer</li>
+              </ul>
+              <p className="photo-credit-inline">
+                {activePhoto.credit} ·{' '}
+                <a href={activePhoto.licenceUrl} target="_blank" rel="noreferrer">
+                  {activePhoto.licence}
+                </a>
+              </p>
+            </>
+          ) : activeInfo ? (
             <>
               <p className="info-kicker">Component</p>
               <h2>{activeInfo.name}</h2>
@@ -539,18 +628,28 @@ export default function App() {
               <h2>L403A1 · Alternative Individual Weapon</h2>
               <p className="info-body">
                 Interactive bench trainer for the Knight’s Armament KS-1 adopted as the L403A1.
-                Hover hotspots for specs. Drag to field-strip; snap parts back onto the ghost
-                outlines to reassemble.
+                Hover hotspots for specs. Drag to field-strip; open Photo for real issued-system
+                imagery.
               </p>
               <ul>
                 <li>Guided mode walks a standard strip / rebuild order</li>
                 <li>Free mode allows any move that respects dependencies</li>
-                <li>Lower receiver stays as the reassembly anchor</li>
+                <li>Photo view uses UK MoD (OGL) and USMC (public domain) images</li>
               </ul>
+              <button
+                type="button"
+                className="photo-mini"
+                onClick={() => setView('photo')}
+              >
+                <img src={REF_PHOTOS[0].src} alt="" />
+                <span>View photoreal reference</span>
+              </button>
             </>
           )}
           <div className="status-row">
-            <span className="hint">{hint}</span>
+            <span className="hint">
+              {view === 'photo' ? 'Photo reference · switch to Schematic to strip' : hint}
+            </span>
             <span className="status-msg">{message}</span>
           </div>
         </aside>
